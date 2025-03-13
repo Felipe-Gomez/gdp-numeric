@@ -437,6 +437,10 @@ class PLDConverter:
         betas = self.betas_symm
 
         # get worst case regret
-        regret = get_worst_case_regret(alphas, betas, pess_mu, tol=err)
+        # this is a quick fix to solve the issue with randomized response.
+        alpha = np.linspace(0, 1, 10000)
+        regret = get_worst_case_regret(alpha, self.get_beta(alpha), pess_mu, tol=err)
+        # TODO: bring this back if the issue is solved.
+        # regret = get_worst_case_regret(alphas, betas, pess_mu, tol=err)
 
         return pess_mu, regret

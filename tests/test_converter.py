@@ -1,10 +1,13 @@
+import numpy as np
 import pytest
+
+from scipy import stats
 
 from gdpnum import PLDConverter
 
 from dp_accounting.pld.privacy_loss_distribution import (
     from_gaussian_mechanism,
-    from_laplace_mechanism,
+    from_randomized_response,
 )
 
 TOL = 1e-4
@@ -21,9 +24,13 @@ def test_gaussian_converter_has_no_regret(mu):
     assert regret < TOL
 
 
-@pytest.mark.parametrize("b", [1.25, 1.5, 2])
-def test_laplace_has_nonzero_regret(b):
-    pld = from_laplace_mechanism(b)
+@pytest.mark.parametrize("eps", [0.75, 1.0, 1.5, 2.0])
+def test_rr_has_nonzero_regret(eps):
+    p = 2 / (1 + np.exp(eps))
+    pld = from_randomized_response(p, num_buckets=2)
     converter = PLDConverter(pld)
     mu, regret = converter.get_mu_and_regret()
-    assert regret > 1e-2
+
+    # Proposition 6.1 in the paper.
+    assert mu == pytest.approx(-2 * stats.norm.ppf(1 / (np.exp(eps) + 1)))
+    assert regret > 0.01

@@ -316,13 +316,20 @@ class PLDConverter:
             Computes the pessimistic μ and worst-case regret.
     """
 
+    MONOTONICITY_TOL = 1e-12
+
     def __init__(self, pld: "dp_accounting.PrivacyLossDistribution"):
         # Compute breakpoints and alpha_bar, beta_bar on tradeoff curve
         alphas, betas, alpha_bar, beta_bar = _compute_breakpoints(pld)
 
         # Validate monotonicity of breakpoints
-        assert np.all(np.diff(alphas) >= 0)
-        assert np.all(np.diff(betas[::-1]) >= 0)
+        assert np.all(
+            (np.diff(alphas) >= 0) | (np.abs(np.diff(alphas)) < self.MONOTONICITY_TOL)
+        )
+        assert np.all(
+            (np.diff(betas[::-1]) >= 0)
+            | (np.abs(np.diff(betas[::-1])) < self.MONOTONICITY_TOL)
+        )
 
         self.alphas = alphas
         self.betas = betas

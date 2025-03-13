@@ -7,6 +7,7 @@ from gdpnum import PLDConverter
 
 from dp_accounting.pld.privacy_loss_distribution import (
     from_gaussian_mechanism,
+    from_laplace_mechanism,
     from_randomized_response,
 )
 
@@ -22,6 +23,14 @@ def test_gaussian_converter_has_no_regret(mu):
     mu_prime, regret = converter.get_mu_and_regret()
     assert mu == pytest.approx(mu_prime, abs=TOL)
     assert regret < TOL
+
+
+@pytest.mark.parametrize("b", [1.0, 1.25, 1.5, 2])
+def test_laplace_has_nonzero_regret(b):
+    pld = from_laplace_mechanism(b)
+    converter = PLDConverter(pld)
+    mu, regret = converter.get_mu_and_regret()
+    assert regret > 0.01
 
 
 @pytest.mark.parametrize("eps", [0.75, 1.0, 1.5, 2.0])

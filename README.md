@@ -13,7 +13,7 @@ pip install gdpnum
 
 
 ### DP-SGD
-To analyze DP-SGD, we have:
+To analyze DP-SGD, you can use:
 
 ```python
 import gdpnum
@@ -30,7 +30,7 @@ We get the numerically computed GDP mu parameter, and regret which
 shows the goodness-of-fit of the GDP.
 
 The library also includes an [Opacus-compatible](https://opacus.ai/api/accounting/iaccountant.html) accountant interface:
-```
+```python
 import gdpnum
 
 acct = gdpnum.dpsgd.CTDAccountant()

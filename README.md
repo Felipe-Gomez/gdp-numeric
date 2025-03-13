@@ -6,32 +6,49 @@ Repository for numerically computing the privacy parameter in Gaussian Different
 
 ## Quickstart
 
-The library relies on the privacy loss distribution accounting from the `dp_accounting` package.
-Here is an example of using it with DP-SGD:
-
-```python
-from dp_accounting.pld.privacy_loss_distribution import from_gaussian_mechanism
-
-noise_multiplier = 9.4
-sample_rate = 0.328
-steps = 2_000
-
-# Construct the PLD object.
-pld = from_gaussian_mechanism(
-    standard_deviation=sigma,
-    sampling_prob=sample_rate,
-    use_connect_dots=True,
-    value_discretization_interval=1e-3,
-).self_compose(steps)
+You can install the library with pip:
+```
+pip install gdpnum
 ```
 
-Using the `PLDConverter` object, we can numerically compute the GDP mu parameter, and regret which
-shows the goodness-of-fit of the GDP:
+
+### DP-SGD
+To analyze DP-SGD, we have:
 
 ```python
 import gdpnum
 
-converter = gdpnum.PLDConverter(pld)
-mu, regret = converter.get_mu_and_regret()
+mu, regret = gdpnum.dpsgd.get_mu_and_regret_for_dpsgd(
+    noise_multiplier=9.4,
+    sample_rate=0.328,
+    num_steps=2000
+)
 # (1.5685621993129137, 0.0010208130697719753)
 ```
+
+We get the numerically computed GDP mu parameter, and regret which
+shows the goodness-of-fit of the GDP.
+
+The library also includes an [Opacus-compatible](https://opacus.ai/api/accounting/iaccountant.html) accountant interface:
+```
+import gdpnum
+
+acct = gdpnum.dpsgd.CTDAccountant()
+acct.step(noise_multiplier=9.4, sample_rate=0.328)
+acct.get_mu_and_regret()
+```
+
+### General mechanisms
+For general mechanisms, the library relies on the privacy loss distribution
+objects from the `dp_accounting` package:
+
+```python
+import gdpnum
+
+pld = ...
+
+converter = gdpnum.PLDConverter(pld)
+mu, regret = converter.get_mu_and_regret()
+```
+
+See an example for the US Census TopDown mechanism in the notebooks folder.

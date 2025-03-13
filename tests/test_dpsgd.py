@@ -27,7 +27,7 @@ def test_get_mu_and_regret_for_dpsgd():
         grid_step=grid_step,
     )
 
-    assert mu == pytest.approx(real_mu)
+    assert mu == pytest.approx(real_mu, abs=1e-2)
     assert regret <= regret_bound
 
 

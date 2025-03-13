@@ -1,0 +1,26 @@
+[project]
+name = "gdpnum"
+version = "0.1.0"
+description = "Numeric computation of the privacy parameter in Gaussian Differential Privacy"
+readme = "README.md"
+authors = [
+    { name = "Juan Felipe Gomez", email = "juangomez@g.harvard.edu" },
+    { name = "Bogdan Kulynych", email = "bogdan@kulyny.ch" }
+]
+requires-python = ">=3.12"
+dependencies = [
+    "dp-accounting>=0.4.4",
+]
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[dependency-groups]
+dev = [
+    "pytest>=8.3.5",
+]
+
+[tool.pytest.ini_options]
+addopts = ["-v"]
+testpaths = ["tests"]

@@ -1,8 +1,9 @@
 # gdpnum
 
 [![CI](https://github.com/Felipe-Gomez/gdp-numeric/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/Felipe-Gomez/gdp-numeric/actions/workflows/ci.yml)
+[![arXiv](https://img.shields.io/badge/arXiv-2503.10945-b31b1b.svg)](https://arxiv.org/abs/2503.10945)
 
-Repository for numerically computing the privacy parameter in Gaussian Differential Privacy.
+Library for numerically computing the privacy parameter in Gaussian Differential Privacy. This library is a companion to the _[(ε,δ) Considered Harmful: Best Practices for Reporting Differential Privacy Guarantees](https://arxiv.org/abs/2503.10945)_ paper.
 
 ## Quickstart
 

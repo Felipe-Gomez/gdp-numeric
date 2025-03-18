@@ -53,3 +53,9 @@ mu, regret = converter.get_mu_and_regret()
 ```
 
 See an example for the US Census TopDown mechanism in the notebooks folder.
+
+To get the tabulation of the trade-off curve function at recommended values of alpha from the paper,
+simply run:
+```
+converter.get_beta()
+```

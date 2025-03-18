@@ -3,9 +3,9 @@ This module provides functions that compute a tradeoff curve T(P,Q)
 given a PLRVs instance (Probability Loss Random Variables). We rely
 on the notation from:
 
-  - Dong et al. (https://arxiv.org/pdf/1905.02383)
-  - Kulynych et al. (https://arxiv.org/pdf/2407.02191)
-  - Gomez et al.
+  - Dong et al. (https://arxiv.org/abs/1905.02383)
+  - Kulynych et al. (https://arxiv.org/abs/2407.02191)
+  - Gomez et al. (https://arxiv.org/abs/2503.10945)
 
 This docstring closely follows that from https://github.com/Felipe-Gomez/riskcal/blob/main/riskcal/plrv.py.
 
@@ -153,11 +153,10 @@ def get_worst_case_regret(
 
     # Grid of probabilities
     # this is a quick fix to solve an issue with randomized response.
-    x = np.linspace(0,1,10_000)
+    x = np.linspace(0, 1, 10_000)
 
     # TODO: bring this back if the issue is solved.
     # x = alphas
-    
 
     while delta_high - delta_low > tol:
 
@@ -307,18 +306,6 @@ class PLDConverter:
         alphas_symm (np.ndarray): Symmetrized breakpoints (if needed).
         betas_symm (np.ndarray): Symmetrized tradeoff values (if needed).
         is_symmetric (bool): Whether the PLD tradeoff function is symmetric.
-
-    Methods:
-        tradeoff_function(input_alphas):
-            Computes the tradeoff function T(P, Q) for given input alpha values.
-        inverse_tradeoff_function(input_alphas):
-            Computes the inverse tradeoff function T(Q, P).
-        get_beta(input_alphas):
-            Computes symmetrized beta values corresponding to given input alpha values.
-        get_mus(err=1e-10):
-            Computes the privacy parameter μ using tradeoff curve properties.
-        get_mu_and_regret(err=1e-10):
-            Computes the pessimistic μ and worst-case regret.
     """
 
     MONOTONICITY_TOL = 1e-12
@@ -326,6 +313,7 @@ class PLDConverter:
     def __init__(self, pld: "dp_accounting.PrivacyLossDistribution"):
         # Compute breakpoints and alpha_bar, beta_bar on tradeoff curve
         alphas, betas, alpha_bar, beta_bar = _compute_breakpoints(pld)
+        self.pld = pld
 
         # Validate monotonicity of breakpoints
         assert np.all(
@@ -346,8 +334,7 @@ class PLDConverter:
             self.betas_symm = self.betas
 
         else:
-
-            # Linear Interoplation
+            # Linear interoplation
             if alpha_bar <= beta_bar:
 
                 alpha_bar_index = np.searchsorted(alphas, alpha_bar)
@@ -400,10 +387,21 @@ class PLDConverter:
         """Evaluate the inverse tradeoff function at given points."""
         return np.interp(input_alphas, self.betas[::-1], self.alphas[::-1])
 
+    def get_advantage(self) -> float:
+        """Evaluate the maximum advantage."""
+        return self.pld.get_delta_for_epsilon(0.0)
+
     def get_beta(
-        self, input_alphas: Union[float, np.ndarray]
+        self, input_alphas: Union[float, np.ndarray] = None
     ) -> Union[float, np.ndarray]:
         """Evaluate the symmetrized tradeoff function at given points."""
+
+        # We use the default alphas recommended in the paper (https://arxiv.org/abs/2503.10945)
+        if input_alphas is None:
+            alpha_star = 0.5 * (1 - self.get_advantage())
+            input_alphas = np.concatenate(
+                [10.0 ** np.array([-10, -8, -6, -4, -3, -2, -1]), [alpha_star]]
+            )
 
         # Convert alphas to array; check if input was scalar
         input_alphas, is_scalar = _ensure_array(input_alphas)

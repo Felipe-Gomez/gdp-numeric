@@ -40,3 +40,5 @@ def test_accountant():
 
     assert mu == pytest.approx(real_mu, abs=1e-2)
     assert regret <= regret_bound
+
+    assert len(acct.get_beta()) == 8

@@ -1,6 +1,6 @@
 [project]
 name = "gdpnum"
-version = "0.1.0"
+version = "0.1.1"
 description = "Numeric computation of the privacy parameter in Gaussian Differential Privacy"
 readme = "README.md"
 authors = [

@@ -76,7 +76,7 @@ class CTDAccountant:
         pld = self.get_pld(**kwargs)
         return pld.get_epsilon_for_delta(delta)
 
-    def get_beta(self, *, alpha, **kwargs):
+    def get_beta(self, alpha=None, **kwargs):
         pld = self.get_pld(**kwargs)
         converter = PLDConverter(pld)
         return converter.get_beta(alpha)

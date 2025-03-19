@@ -7,7 +7,7 @@ authors = [
     { name = "Juan Felipe Gomez", email = "juangomez@g.harvard.edu" },
     { name = "Bogdan Kulynych", email = "bogdan@kulyny.ch" }
 ]
-requires-python = ">=3.12"
+requires-python = ">=3.11"
 dependencies = [
     "dp-accounting>=0.4.4",
 ]
